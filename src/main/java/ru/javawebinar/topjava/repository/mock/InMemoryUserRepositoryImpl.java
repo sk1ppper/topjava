@@ -21,7 +21,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         save(new User(ADMIN_ID,"Admin","murat@icloud.com","123456", Role.ROLE_ADMIN));
         save(new User(USER_ID,"User1","murat228@icloud.com","654321", Role.ROLE_USER));
     }
-
+//123
     @Override
     public User save(User user) {
         if (user.isNew()) {
