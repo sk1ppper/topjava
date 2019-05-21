@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
     public static final int ADMIN_ID=0;
@@ -21,7 +20,6 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     {
         save(new User(ADMIN_ID,"Admin","murat@icloud.com","123456", Role.ROLE_ADMIN));
         save(new User(USER_ID,"User1","murat228@icloud.com","654321", Role.ROLE_USER));
-        save(new User(USER_ID,"User228","murat228@icloud.com","654321", Role.ROLE_USER));
     }
 
     @Override
