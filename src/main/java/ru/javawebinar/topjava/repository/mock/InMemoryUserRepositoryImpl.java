@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.mock;
 
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.model.AbstractNamedEntity;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
@@ -21,7 +22,6 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     {
         save(new User(ADMIN_ID,"Admin","murat@icloud.com","123456", Role.ROLE_ADMIN));
         save(new User(USER_ID,"User1","murat228@icloud.com","654321", Role.ROLE_USER));
-        save(new User(USER_ID,"User228","murat228@icloud.com","654321", Role.ROLE_USER));
     }
 
     @Override
