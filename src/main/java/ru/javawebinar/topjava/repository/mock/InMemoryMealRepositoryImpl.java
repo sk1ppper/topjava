@@ -65,5 +65,6 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     public Collection<Meal> getAll(Integer userId) {
         return repository.get(userId).values();
     }
+
 }
 

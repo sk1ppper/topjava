@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.mock.InMemoryMealRepositoryImpl;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.service.MealServiceImpl;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletConfig;
@@ -15,13 +16,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    private static final int user = 1;
+    private static int user = 1;
     private MealService service;
 
     @Override
@@ -34,15 +37,34 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+        String action = request.getParameter("action");
+        try {
+            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                    LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.parseInt(request.getParameter("calories")));
 
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
+            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+            service.save(user, meal);
+            response.sendRedirect("meals");
+        }
+        catch(NullPointerException e){
+            if (action.equals("filter")) {
+                LocalDate startDate = DateTimeUtil.checkLocalDate(request.getParameter("date1"));
+                LocalDate endDate = DateTimeUtil.checkLocalDate(request.getParameter("date2"));
+                LocalTime startTime = DateTimeUtil.checkLocalTime(request.getParameter("time1"));
+                LocalTime endTime = DateTimeUtil.checkLocalTime(request.getParameter("time2"));
 
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        service.save(user,meal);
-        response.sendRedirect("meals");
+                try {
+                    request.setAttribute("meals", service.sortByDateTime(startTime, endTime,startDate,endDate, user));
+                }
+                catch(NullPointerException e1){
+
+                }
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+            }
+
+        }
     }
 
     @Override

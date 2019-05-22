@@ -7,10 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -32,8 +29,16 @@ public class MealsUtil {
         return getFilteredWithExceeded(meals, caloriesPerDay, meal -> true);
     }
 
-    public static List<MealWithExceed> getFilteredWithExceeded(Collection<Meal> meals, int caloriesPerDay, LocalTime startTime, LocalTime endTime) {
-        return getFilteredWithExceeded(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getTime(), startTime, endTime));
+    public static List<MealWithExceed> getFilteredWithExceeded(Collection<Meal> meals, int caloriesPerDay, LocalTime startTime, LocalTime endTime,LocalDate startDate, LocalDate endDate) {
+        if (startTime==null) startTime = LocalTime.of(00,00);
+        if (endTime==null) endTime = LocalTime.of(23,59);
+        if (startDate==null) startDate = LocalDate.of(1970,1,1);
+        if (endDate==null) endDate = LocalDate.now();
+        LocalTime finalStartTime = startTime;
+        LocalTime finalEndTime = endTime;
+        LocalDate finalStartDate = startDate;
+        LocalDate finalEndDate = endDate;
+        return getFilteredWithExceeded(meals, caloriesPerDay, meal -> (DateTimeUtil.isBetween(meal.getTime(), finalStartTime, finalEndTime))&& DateTimeUtil.isBetween(meal.getDate(), finalStartDate, finalEndDate));
     }
 
     private static List<MealWithExceed> getFilteredWithExceeded(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
