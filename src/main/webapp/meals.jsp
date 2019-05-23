@@ -22,23 +22,6 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <hr/>
-    <form>
-        <p>
-            <label>Время: </label>
-            <input type="time" id="time1" name="time1"/>
-            <input type="time" id="time2" name="time2" min="time1"/>
-
-        </p>
-            <label>Дата: </label>
-            <input type="date" id="date1" name="date1"/>
-            <input type="date" id="date2" name="date2" min = "date2"/>
-        </p>
-        <p>
-            <label>Действия</label>
-            <input type="submit" name="submit2" value="Отфильтровать" />
-            <input type="button" name="button2" value="Отмена фильтра" onclick="window.history.back()"/>
-        </p>
-    </form>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>

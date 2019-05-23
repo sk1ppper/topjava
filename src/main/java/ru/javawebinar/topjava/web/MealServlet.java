@@ -8,6 +8,7 @@ import ru.javawebinar.topjava.repository.mock.InMemoryMealRepositoryImpl;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.service.MealServiceImpl;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -29,13 +30,16 @@ public class MealServlet extends HttpServlet {
         super.init(config);
         service = new MealServiceImpl(new InMemoryMealRepositoryImpl());
     }
+    @Override
+    public void destroy() {
+        springContext.close();
+        super.destroy();
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String id = request.getParameter("id");
-
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+        Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
