@@ -1,8 +1,9 @@
 package ru.javawebinar.topjava.repository.mock;
-
+import org.springframework.util.CollectionUtils;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         save(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 14, 0), "Obed", 1510), 1);
         save(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 6, 0), "Zavtrak", 2510), 1);
     }
+
 
     @Override
     public Meal save(Meal meal, int userId) {
@@ -67,8 +69,21 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll(Integer userId) {
-        return repository.get(userId).values();
+    public List<Meal> getAll(int userId) {
+        return getAllFiltered(userId, meal -> true);
+    }
+
+    @Override
+    public List<Meal> getBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
+        return getAllFiltered(userId, meal -> DateTimeUtil.isBetween(meal.getDateTime(), startDateTime, endDateTime));
+    }
+
+    private List<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {
+        Map<Integer, Meal> meals = repository.get(userId);
+        return CollectionUtils.isEmpty(meals) ? Collections.emptyList() :
+                meals.values().stream()
+                        .filter(filter)
+                        .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                        .collect(Collectors.toList());
     }
 }
-
