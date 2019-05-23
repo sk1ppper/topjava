@@ -21,7 +21,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     //
     {
         //MealsUtil.MEALS.forEach(this::save);
-        MealsUtil.MEALS.forEach(meal -> save(meal, 0));
+        MealsUtil.MEALS.forEach(meal -> save(meal, 2));
         MealsUtil.MEALS.forEach(meal -> save(meal, 1));
         save(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 20, 0), "Ужин", 510), 1);
         save(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 14, 0), "Obed", 1510), 1);
