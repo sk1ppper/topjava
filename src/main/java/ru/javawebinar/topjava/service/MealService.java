@@ -10,9 +10,10 @@ import java.util.Collection;
 import java.util.List;
 
 public interface MealService {
+
        Meal get(int id, int userId) throws NotFoundException;
 
-   void delete(int id, int userId) throws NotFoundException;
+       void delete(int id, int userId) throws NotFoundException;
 
             default List<Meal> getBetweenDates(LocalDate startDate, LocalDate endDate, int userId) {
               return getBetweenDateTimes(LocalDateTime.of(startDate, LocalTime.MIN), LocalDateTime.of(endDate, LocalTime.MAX), userId);

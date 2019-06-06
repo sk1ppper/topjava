@@ -17,22 +17,22 @@ public class MealServiceImpl implements MealService {
     private final MealRepository repository;
 
             @Autowired
-    public MealServiceImpl(MealRepository repository) {
+            public MealServiceImpl(MealRepository repository) {
                 this.repository = repository;
             }
 
             @Override
-    public Meal get(int id, int userId) {
+            public Meal get(int id, int userId) {
                 return checkNotFoundWithId(repository.get(id, userId), id);
             }
 
             @Override
-    public void delete(int id, int userId) {
+            public void delete(int id, int userId) {
                 checkNotFoundWithId(repository.delete(id, userId), id);
             }
 
             @Override
-    public List<Meal> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
+            public List<Meal> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
                 return repository.getBetween(startDateTime, endDateTime, userId);
             }
 
