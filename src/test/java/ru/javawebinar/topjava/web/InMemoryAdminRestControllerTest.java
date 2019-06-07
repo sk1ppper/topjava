@@ -29,7 +29,7 @@ public class InMemoryAdminRestControllerTest {
     public static void afterClass() {
         appCtx.close();
     }
-
+//comment
     @Before
     public void setUp() throws Exception {
         // re-initialize
