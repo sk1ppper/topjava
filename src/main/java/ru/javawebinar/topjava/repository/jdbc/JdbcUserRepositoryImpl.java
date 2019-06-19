@@ -30,7 +30,6 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         this.insertUser = new SimpleJdbcInsert(dataSource)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
-
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
@@ -58,8 +57,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean delete(int id) {
-        return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
+    public boolean delete(int id) { return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
     }
 
     @Override
