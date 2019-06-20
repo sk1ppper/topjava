@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,12 +27,12 @@ public class JdbcMealRepositoryImpl implements MealRepository {
 
     private final SimpleJdbcInsert insertMeal;
     @Autowired
-    public JdbcMealRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, JdbcTemplate jdbcTemplate1, NamedParameterJdbcTemplate namedParameterJdbcTemplate1) {
+    public JdbcMealRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(dataSource)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = jdbcTemplate1;
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate1;
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
@@ -43,7 +44,14 @@ public class JdbcMealRepositoryImpl implements MealRepository {
                 .addValue("userid",userId)
                 .addValue("calories", meal.getCalories());
         if (meal.isNew()) {
-            meal.setId(insertMeal.executeAndReturnKey(map).intValue());
+            try {
+                meal.setId(insertMeal.executeAndReturnKey(map).intValue());
+            }
+            catch (Exception e){
+
+                namedParameterJdbcTemplate.update(
+                        "UPDATE meals SET datetime=:dateTime,description=:description, calories=:calories,userid=:userid where id=:id",map);
+            }
         } else if (namedParameterJdbcTemplate.update(
                 "UPDATE meals SET datetime=:dateTime,description=:description, calories=:calories,userid=:userid where id=:id",map) == 0) {
             return null;
@@ -60,7 +68,7 @@ public class JdbcMealRepositoryImpl implements MealRepository {
     public Meal get(int id, int userId) {
         try {
             List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=? and userid=?", ROW_MAPPER, id, userId);
-            return meals.get(0);
+            return DataAccessUtils.singleResult(meals);
         }
         catch (NullPointerException e){
             return null;
