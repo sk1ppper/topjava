@@ -7,16 +7,12 @@ import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
-import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.Util;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -30,12 +26,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     //
     {
-        //MealsUtil.MEALS.forEach(this::save);
-        MealsUtil.MEALS.forEach(meal -> save(meal, 2));
-        MealsUtil.MEALS.forEach(meal -> save(meal, 1));
-        save(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 20, 0), "Ужин", 510), 1);
-        save(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 14, 0), "Obed", 1510), 1);
-        save(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 6, 0), "Zavtrak", 2510), 1);
+
     }
 
 
@@ -94,7 +85,9 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return getAllFiltered(userId, meal -> DateTimeUtil.isBetween(meal.getDateTime(), startDateTime, endDateTime));
+        Objects.requireNonNull(startDateTime);
+        Objects.requireNonNull(endDateTime);
+        return getAllFiltered(userId, meal -> Util.isBetween(meal.getDateTime(), startDateTime, endDateTime));
     }
 
     private List<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {
